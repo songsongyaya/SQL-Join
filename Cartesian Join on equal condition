@@ -1,5 +1,6 @@
 /* Question: produce a result set shows every customer by each month, how much sales are generated between JAN 2010 to MAY 2010; 
              if no sales generated from that customer, produce 0 on the line */
+	     
 ----Build a sale table
 CREATE TABLE #SALES(
 cust_id int,
@@ -20,7 +21,9 @@ insert into #sales values (2,'03/03/2010',100);
 insert into #sales values (2,'05/01/2010',100);
 insert into #sales values (2,'04/01/2010',100);
 insert into #sales values (3,'04/05/2010',100);
----SOLUTION
+
+---SOLUTION ( including step1 and step2 )
+
 ----Step 1: Build a consecutive date called 'calendar'
 create table #calendar (C_date  date);
 declare @calendar as date ='01/01/2010';
@@ -29,6 +32,7 @@ begin
 insert into #calendar values (@calendar)
 set @calendar =dateadd(day,1,@calendar)
 end;
+
 ----Step 2: find monthly sale 
 select C.cust_id, C.c_yrmo, 
        coalesce(ms.sale_monthly, 0) as sale_mon                                 
