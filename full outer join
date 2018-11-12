@@ -1,0 +1,5 @@
+/***************************************************************
+generate a report to compare a sales person's performance for every month 
+between two years;compare the same month performance between current year
+and previous year. All tables come from AdventureWorks2014.
+****************************************************************/ 
