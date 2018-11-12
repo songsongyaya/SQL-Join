@@ -1,14 +1,16 @@
 /* consider this business scenario: (1) insurance company maintains member table; 
                                     (2) every month SSN office send death master file;
                                     (3) find out who are the members still alive;           */
+                                    
 ---create tables
 create table #mem (ssn int);
 create table #death (ssn int);
 insert into #mem values (1),(2),(3);
 insert into #death values (2);
 select * from #mem 
-select * from #death 
----- solution
+select * from #death
+
+---- SOLUTION
 select a.ssn 
 from #mem a
      left outer join
