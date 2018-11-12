@@ -1,0 +1,60 @@
+/* Question: produce a result set shows every customer by each month, how much sales are generated between JAN 2010 to MAY 2010; 
+             if no sales generated from that customer, produce 0 on the line */
+----Build a sale table
+CREATE TABLE #SALES(
+cust_id int,
+sale_date date,
+sale_amount decimal(18,4)
+);
+
+insert into #sales values (1,'01/01/2010',100);
+insert into #sales values (1,'01/02/2010',100);
+insert into #sales values (1,'01/03/2010',100);
+insert into #sales values (1,'02/01/2010',100);
+insert into #sales values (1,'04/01/2010',100);
+insert into #sales values (1,'04/05/2010',100);
+
+insert into #sales values (2,'01/02/2010',100);
+insert into #sales values (2,'01/04/2010',100);
+insert into #sales values (2,'03/03/2010',100);
+insert into #sales values (2,'05/01/2010',100);
+insert into #sales values (2,'04/01/2010',100);
+insert into #sales values (3,'04/05/2010',100);
+---SOLUTION
+----Step 1: Build a consecutive date called 'calendar'
+create table #calendar (C_date  date);
+declare @calendar as date ='01/01/2010';
+while @calendar <='05/31/2010'
+begin
+insert into #calendar values (@calendar)
+set @calendar =dateadd(day,1,@calendar)
+end;
+----Step 2: find monthly sale 
+select C.cust_id,C.c_yrmo, 
+       coalesce(ms.sale_monthly, 0) as sale_mon                                 
+from (select * 
+      from
+          (select distinct cust_id
+	       from #SALES 
+	       ) A
+           inner join 
+	      (
+		   select distinct datepart(year, C_date)*100 + datepart(month,C_date) as c_yrmo
+	       from #calendar 
+	       ) B 
+	       on 1=1
+	   ) C
+left outer join 
+    (select cust_id,
+	        datepart(year, sale_date)*100 + datepart(month,sale_date) as sale_yrmo,
+			sum(sale_amount) as sale_monthly
+	 from #SALES 
+	 where sale_date >='01/01/2010' and sale_date <='05/31/2010'
+	 group by cust_id ,datepart(year, sale_date)*100 + datepart(month,sale_date)
+	 )MS
+on C.c_yrmo = MS.sale_yrmo
+   and
+   C.cust_id = MS.cust_id
+order by  C.cust_id,C.c_yrmo
+;
+     
