@@ -57,4 +57,4 @@ on C.c_yrmo = MS.sale_yrmo
    C.cust_id = MS.cust_id
 order by  C.cust_id,C.c_yrmo
 ;
-     
+   
