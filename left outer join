@@ -1,63 +1,17 @@
-create table product 
-( product_id  integer not null,
-  product_num varchar(20)
-);
-create table "order"
-(order_id integer not null,
- order_date date,
- customer varchar(20),
- product_id int not null
-);
-INSERT INTO PRODUCT VALUES (1,'EGG'),(2,'SOUP'),(3,'MILK'),(4,'TOMATO');
-INSERT INTO "ORDER" VALUES 
-(1,'2010-01-01','MIKE',1),
-(2,'2010-01-01','MIKE',2),
-(3, '2010-01-02','JOHN',1),
-(4,'2010-01-02','SMITH',3);
-select * from product;
-select * from "order"; 
-
---- INNER JOIN BY MATCHING ON PRODUCT_ID
-select *
-from product a
-     inner join
-	   "order" b
-	   on a.product_id =b.product_id
---- left outer join
-select *
-from product a
-     left outer join
-	   "order" b
-	   on a.product_id =b.product_id
--- Q&A what if the product table has duplicates .. 
--- Cartesian product is produced on the join. 
----demo
-insert into product values (1, 'duck egg')
-select * from product
-select *
-from product a
-     left outer join
-	   "order" b
-	   on a.product_id =b.product_id
-     order by a.product_id, b.order_id
---- Q&A what happens if we use order left outer join to product
-select *
-from "order" b
-     left outer join
-	   product a
-	   on a.product_id =b.product_id
-     order by a.product_id, b.order_id
- /* consider this business scenario: (1) insurance company maintains member table; （2）every month SSN office send death master file;
-(3) find out who are the members still alive. */
+/* consider this business scenario: (1) insurance company maintains member table; 
+                                    (2) every month SSN office send death master file;
+                                    (3) find out who are the members still alive;           */
+---create tables
 create table #mem (ssn int);
 create table #death (ssn int);
 insert into #mem values (1),(2),(3);
 insert into #death values (2);
 select * from #mem 
 select * from #death 
+---- solution
 select a.ssn 
 from #mem a
      left outer join
-	   #death b
-	   on a.ssn =b.ssn
+     #death b
+     on a.ssn =b.ssn
 where b.ssn is null 
