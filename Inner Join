@@ -1,0 +1,8 @@
+----use IN adn join to find distinct person who are with address record
+
+select p.*
+from person.person p
+     inner join
+	   (select distinct businessentityid 
+	   from person.BusinessEntityAddress) ad
+	   on p.BusinessEntityID =ad.BusinessEntityID 
